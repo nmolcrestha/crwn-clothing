@@ -3,13 +3,13 @@ import React, { Component } from 'react';
 import FormInput from '../form-input/form-input.component';
 import CustomBtn from '../custom-btn/custom-btn.component';
 
-import {signInWithGoogle} from '../../firebase/firebase.util'
+import { auth, signInWithGoogle} from '../../firebase/firebase.util'
 
 import './sign-in.style.scss';
 
 class SignIn extends Component{
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
 
         this.state = {
             email: '',
@@ -17,10 +17,16 @@ class SignIn extends Component{
         }
     }
 
-    handelSubmit = event =>{
-        event.preventdefault();
-        this.setState({email: '', password: ''});
-    }
+    handelSubmit = async event =>{
+        event.preventDefault();
+        const {email, password} = this.state;
+        try{
+            await auth.signInWithEmailAndPassword(email,password);
+            this.setState({email: '', password: ''});
+        }catch(error){
+            console.log(error);
+        }  
+    };
 
     handelChange = event =>{
         const {value, name} = event.target;
